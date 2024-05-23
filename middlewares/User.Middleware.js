@@ -1,8 +1,9 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const httpStatus = require("http-status");
+const {User} = require("./../models")
 
-async function Auth(req, res, next){
+async function Authentication(req, res, next){
 
     try{
 
@@ -12,7 +13,12 @@ async function Auth(req, res, next){
 
         if(decoded){
 
-            req.userId = decoded.id
+            req.userId = decoded.id;
+
+            const user = await User.findById(req.userId);
+
+            req.userRole = user.role;
+            
             next()
 
         }else{
@@ -35,6 +41,24 @@ async function Auth(req, res, next){
 
 }
 
+function Authorization(roles){
+
+    return (req, res, next)=>{
+        
+        const role = req.userRole;
+        
+        if(roles.includes(role)){
+            next()
+        }else{
+            res.status(httpStatus.UNAUTHORIZED).json({
+                message : "Unauthorized access"
+            })
+        }
+    }
+
+}
+
 module.exports = {
-    Auth
+    Authentication,
+    Authorization
 }

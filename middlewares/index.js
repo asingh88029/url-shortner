@@ -1,5 +1,6 @@
-const {Auth} = require("./User.Middleware");
+const {Authentication, Authorization} = require("./User.Middleware");
 
 module.exports = {
-    Auth
+    Authentication,
+    Authorization
 }

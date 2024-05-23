@@ -10,11 +10,14 @@ async function shortURL(req, res){
 
         const {originalUrl} = req.body;
 
+        const userId = req.userId;
+
         const shortURL = "http://"+req.headers.host+"/"+generateUniqueId();
 
         const url = await new Url({
             "originalUrl" : originalUrl,
             "shortendUrl" : shortURL,
+            "user" : userId
         })
 
         await url.save()
@@ -44,6 +47,11 @@ async function redirectToURL(req, res){
         const shortURL = "http://"+req.headers.host+"/"+urlId;
     
         const doc  = await Url.findOne({"shortendUrl":shortURL})
+
+        const prevClicked = doc.clicked;
+        doc.clicked = prevClicked + 1;
+        
+        await doc.save()
     
         res.redirect(doc.originalUrl);
 
@@ -59,8 +67,44 @@ async function redirectToURL(req, res){
 
 }
 
+async function getAllUrls(req, res){
+
+    try{
+
+        const userId = req.userId;
+
+        const result = await Url.find({user: userId});
+
+        console.log(result)
+
+        if(!result.length){
+
+            res.status(httpStatus.NOT_FOUND).json({
+                message : "URL not found"
+            })
+
+        }else{
+
+            res.status(httpStatus.OK).json({
+                data : result
+            })
+
+        }
+
+    }catch(er){
+
+        console.log(err)
+
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            message : "Something went wrong"
+        })
+
+    }
+
+}
 
 module.exports = {
     shortURL,
-    redirectToURL
+    redirectToURL,
+    getAllUrls
 }
