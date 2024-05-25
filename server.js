@@ -13,9 +13,11 @@ server.use(express.json())
 
 server.use("/url", URLRouter);
 
-server.use("/user", UserRouter)
+server.use("/user", UserRouter);
 
-server.get("/:urlId", redirectToURL)
+server.get("/:urlId", redirectToURL);
+
+// TODO 3 : write and apply error handling middleware
 
 server.listen(PORT, ()=>{
     console.log("Server is started at port - ", PORT)
