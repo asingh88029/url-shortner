@@ -34,6 +34,7 @@ async function Signup(req, res){
         sendEmail(email, sub, body)
 
         res.status(httpStatus.CREATED).json({
+            status : true,
             message : "Now you are customer, We will make money!!"
         })
 
@@ -42,6 +43,7 @@ async function Signup(req, res){
         console.log(err)
 
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            status : false,
             message : "Something went wrong"
         })
 
@@ -60,6 +62,7 @@ async function Signin(req, res){
         if(!doc){
 
             res.status(httpStatus.BAD_REQUEST).json({
+                status : false,
                 message : "Invalid Credentials"
             })
 
@@ -78,6 +81,7 @@ async function Signin(req, res){
             const token = await jwt.sign(payload, process.env.JWT_SECRET_KEY, {expiresIn: '1h'});
 
             res.status(httpStatus.OK).json({
+                status : true,
                 token : token
             })
 
@@ -85,6 +89,7 @@ async function Signin(req, res){
         }else{
             
             res.status(httpStatus.BAD_REQUEST).json({
+                status : false,
                 message : "Invalid Credentials"
             })
             
@@ -96,6 +101,7 @@ async function Signin(req, res){
         console.log(err)
 
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            status : false,
             message : "Something went wrong"
         })
 
