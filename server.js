@@ -3,11 +3,14 @@ require("dotenv").config();
 const {URLRouter} = require("./routers");
 const {UserRouter} = require("./routers")
 require("./db/connect");
+var cors = require('cors')
 const {redirectToURL} = require("./controllers")
 
 const PORT = process.env.PORT || 3000;
 
 const server = express();
+
+server.use(cors());
 
 server.use(express.json())
 
